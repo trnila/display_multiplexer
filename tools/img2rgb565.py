@@ -27,7 +27,10 @@ for x in range(height):
         g = remap(px[1], 6)
         b = remap(px[2], 5)
 
+        # rgb565
         val = (r << 11) | (g << 5) | b
+        # byte swap
+        val = (val >> 8) | ((val & 0xFF) << 8)
         pixels.append(hex(val))
 
 

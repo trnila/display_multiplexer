@@ -3,7 +3,18 @@
 #include "stm32f1xx.h"
 #include "spi.h"
 #include "ILI9225.h"
+#include <memory.h>
 
+static uint16_t line[ILI9225_LCD_WIDTH];
+
+void begin_transfer() {
+	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(TFT_RS_GPIO_Port, TFT_RS_Pin, GPIO_PIN_SET);
+}
+
+void end_transfer() {
+	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_SET);
+}
 
 void transmit(uint8_t data) {
 	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_RESET);
@@ -133,9 +144,17 @@ void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t data) {
 
 void LCD_Clear(uint16_t color) {
 	LCD_SetRegion(0, 0, ILI9225_LCD_WIDTH, ILI9225_LCD_HEIGHT);
-	for (int i = 0; i < ILI9225_LCD_WIDTH * ILI9225_LCD_HEIGHT; i++) {
-		LCD_WriteData_16Bit(color);
+
+	begin_transfer();
+	for(int i = 0; i < ILI9225_LCD_WIDTH; i++) {
+		line[i] = color;
 	}
+
+	for (int i = 0; i < ILI9225_LCD_HEIGHT; i++) {
+		HAL_SPI_Transmit(&hspi1, line, sizeof(line), HAL_MAX_DELAY);
+	}
+
+	end_transfer();
 }
 
 void LCD_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
@@ -155,8 +174,7 @@ void LCD_FillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t c
 void LCD_DrawBitmap(const uint16_t* data, uint8_t x0, uint8_t y0, uint8_t width, uint8_t height) {
 	LCD_SetRegion(x0, y0, width, height);
 
-	int pixels = width * height;
-	while(pixels--) {
-		LCD_WriteData_16Bit(*data++);
-	}
+	begin_transfer();
+	HAL_SPI_Transmit(&hspi1, (uint8_t*) data, sizeof(data[0]) * width * height, HAL_MAX_DELAY);
+	end_transfer();
 }
