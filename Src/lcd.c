@@ -189,7 +189,7 @@ void LCD_FillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t c
 }
 
 void LCD_DrawBitmap(const uint16_t* data, uint8_t x0, uint8_t y0, uint8_t width, uint8_t height) {
-	LCD_SetRegion(x0, y0, width, height);
+	LCD_SetRegion(x0, y0, x0 + width, y0 + height);
 
 	task = xTaskGetCurrentTaskHandle();
 
