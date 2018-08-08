@@ -23,6 +23,8 @@ SET(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F103C8Tx_FLASH.ld)
 #Uncomment for software floating point
 #SET(FPU_FLAGS "-mfloat-abi=soft")
 
+add_definitions(-DSTM32F1 -DSSD1306_USE_SPI)
+
 SET(COMMON_FLAGS "-mcpu=cortex-m3 ${FPU_FLAGS} -mthumb -mthumb-interwork -ffunction-sections -fdata-sections -g -fno-common -fmessage-length=0 -specs=nosys.specs -specs=nano.specs")
 
 SET(CMAKE_CXX_FLAGS_INIT "${COMMON_FLAGS} -std=c++11")
