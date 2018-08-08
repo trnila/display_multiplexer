@@ -5,41 +5,27 @@
 #include "spi.h"
 #include "ILI9225.h"
 #include "utils.h"
+#include "spi_bus.h"
+
+#define DC_INDEX GPIO_PIN_RESET
+#define DC_DATA GPIO_PIN_SET
 
 static uint16_t line[ILI9225_LCD_WIDTH];
-TaskHandle_t task;
 
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	vTaskNotifyGiveFromISR(task, &xHigherPriorityTaskWoken);
+static struct spi_dev dev = {
+		.port_cs = TFT_CS_GPIO_Port,
+		.pin_cs = TFT_CS_Pin,
 
-	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-}
-
-
-void begin_transfer() {
-	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(TFT_RS_GPIO_Port, TFT_RS_Pin, GPIO_PIN_SET);
-}
-
-void end_transfer() {
-	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_SET);
-}
-
-void transmit(uint8_t data) {
-	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_RESET);
-	HAL_SPI_Transmit(&hspi1, &data, sizeof(data), HAL_MAX_DELAY);
-	HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_SET);
-}
+		.port_dc = TFT_RS_GPIO_Port,
+		.pin_dc = TFT_RS_Pin
+};
 
 void LCD_WriteIndex(uint8_t index) {
-	HAL_GPIO_WritePin(TFT_RS_GPIO_Port, TFT_RS_Pin, GPIO_PIN_RESET);
-	transmit(index);
+	SPIBus_transmit(&dev, DC_INDEX, &index, 1);
 }
 
 void LCD_WriteData(uint8_t data) {
-	HAL_GPIO_WritePin(TFT_RS_GPIO_Port, TFT_RS_Pin, GPIO_PIN_SET);
-	transmit(data);
+	SPIBus_transmit(&dev, DC_DATA, &data, 1);
 }
 
 void LCD_WriteData_16Bit(uint16_t data) {
@@ -155,23 +141,15 @@ void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t data) {
 void LCD_Clear(uint16_t color) {
 	LCD_SetRegion(0, 0, ILI9225_LCD_WIDTH, ILI9225_LCD_HEIGHT);
 
-	task = xTaskGetCurrentTaskHandle();
-
 	// prepare buffered line
 	for(int i = 0; i < ILI9225_LCD_WIDTH; i++) {
 		line[i] = color;
 	}
 
 	// send line by line
-	begin_transfer();
 	for (int i = 0; i < ILI9225_LCD_HEIGHT; i++) {
-		if(HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*) line, sizeof(line)) != HAL_OK) {
-			HALT();
-		}
-		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+		SPIBus_transmit(&dev, DC_DATA, (uint8_t*) line, sizeof(line));
 	}
-
-	end_transfer();
 }
 
 void LCD_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
@@ -190,13 +168,5 @@ void LCD_FillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t c
 
 void LCD_DrawBitmap(const uint16_t* data, uint8_t x0, uint8_t y0, uint8_t width, uint8_t height) {
 	LCD_SetRegion(x0, y0, x0 + width, y0 + height);
-
-	task = xTaskGetCurrentTaskHandle();
-
-	begin_transfer();
-	if(HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*) data, sizeof(data[0]) * width * height) != HAL_OK) {
-		HALT();
-	}
-	ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-	end_transfer();
+	SPIBus_transmit(&dev, DC_DATA, (uint8_t*) data, sizeof(data[0]) * width * height);
 }

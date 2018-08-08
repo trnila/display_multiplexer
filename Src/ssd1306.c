@@ -1,22 +1,19 @@
+#include <FreeRTOS.h>
+#include <task.h>
 #include "ssd1306.h"
+#include "spi_bus.h"
 
-#if defined(SSD1306_USE_I2C)
+#define DC_COMMAND GPIO_PIN_RESET
+#define DC_DATA GPIO_PIN_SET
 
-void ssd1306_Reset(void) {
-	/* for I2C - do nothing */
-}
+static struct spi_dev dev = {
+        .port_cs = SSD1306_CS_GPIO_Port,
+        .pin_cs = SSD1306_CS_Pin,
 
-// Send a byte to the command register
-void ssd1306_WriteCommand(uint8_t byte) {
-	HAL_I2C_Mem_Write(&SSD1306_I2C_PORT, SSD1306_I2C_ADDR, 0x00, 1, &byte, 1, HAL_MAX_DELAY);
-}
+        .port_dc = SSD1306_DC_GPIO_Port,
+        .pin_dc = SSD1306_DC_Pin
+};
 
-// Send data
-void ssd1306_WriteData(uint8_t* buffer, size_t buff_size) {
-	HAL_I2C_Mem_Write(&SSD1306_I2C_PORT, SSD1306_I2C_ADDR, 0x40, 1, buffer, buff_size, HAL_MAX_DELAY);
-}
-
-#elif defined(SSD1306_USE_SPI)
 
 void ssd1306_Reset(void) {
 	// CS = High (not selected)
@@ -24,30 +21,20 @@ void ssd1306_Reset(void) {
 
 	// Reset the OLED
 	HAL_GPIO_WritePin(SSD1306_Reset_GPIO_Port, SSD1306_Reset_Pin, GPIO_PIN_RESET);
-	HAL_Delay(10);
+	vTaskDelay(10);
 	HAL_GPIO_WritePin(SSD1306_Reset_GPIO_Port, SSD1306_Reset_Pin, GPIO_PIN_SET);
-	HAL_Delay(10);
+	vTaskDelay(10);
 }
 
 // Send a byte to the command register
 void ssd1306_WriteCommand(uint8_t byte) {
-    HAL_GPIO_WritePin(SSD1306_CS_GPIO_Port, SSD1306_CS_Pin, GPIO_PIN_RESET); // select OLED
-    HAL_GPIO_WritePin(SSD1306_DC_GPIO_Port, SSD1306_DC_Pin, GPIO_PIN_RESET); // command
-    HAL_SPI_Transmit(&SSD1306_SPI_PORT, (uint8_t *) &byte, 1, HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(SSD1306_CS_GPIO_Port, SSD1306_CS_Pin, GPIO_PIN_SET); // un-select OLED
+    SPIBus_transmit(&dev, DC_COMMAND, &byte, 1);
 }
 
 // Send data
 void ssd1306_WriteData(uint8_t* buffer, size_t buff_size) {
-    HAL_GPIO_WritePin(SSD1306_CS_GPIO_Port, SSD1306_CS_Pin, GPIO_PIN_RESET); // select OLED
-    HAL_GPIO_WritePin(SSD1306_DC_GPIO_Port, SSD1306_DC_Pin, GPIO_PIN_SET); // data
-    HAL_SPI_Transmit(&SSD1306_SPI_PORT, buffer, buff_size, HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(SSD1306_CS_GPIO_Port, SSD1306_CS_Pin, GPIO_PIN_SET); // un-select OLED
+    SPIBus_transmit(&dev, DC_DATA, buffer, buff_size);
 }
-
-#else
-#error "You should define SSD1306_USE_SPI or SSD1306_USE_I2C macro"
-#endif
 
 
 // Screenbuffer
@@ -62,7 +49,7 @@ void ssd1306_Init(void) {
 	ssd1306_Reset();
 
     // Wait for the screen to boot
-    HAL_Delay(100);
+    vTaskDelay(100);
     
     // Init OLED
     ssd1306_WriteCommand(0xAE); //display off
