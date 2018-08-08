@@ -1,0 +1,10 @@
+cmake-build-debug/
+.idea/*
+*.tmp
+Inc/images/
+.cproject
+.project
+.settings/
+mx.scratch
+.mxproject
+
