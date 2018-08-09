@@ -1,3 +1,4 @@
+#include <memory.h>
 #include <FreeRTOS.h>
 #include <task.h>
 #include "ssd1306.h"
@@ -157,6 +158,10 @@ void ssd1306_Fill(SSD1306_COLOR color) {
     }
 }
 
+void ssd1306_Swap(uint8_t *buffer) {
+    memcpy(SSD1306_Buffer, buffer, sizeof(SSD1306_Buffer));
+}
+
 // Write the screenbuffer with changed to the screen
 void ssd1306_UpdateScreen(void) {
     uint8_t i;
@@ -191,6 +196,17 @@ void ssd1306_DrawPixel(uint8_t x, uint8_t y, SSD1306_COLOR color) {
     }
 }
 
+SSD1306_COLOR ssd1306_GetPixel(uint8_t x, uint8_t y) {
+	if(x >= SSD1306_WIDTH || y >= SSD1306_HEIGHT) {
+		// Don't write outside the buffer
+		return Black;
+	}
+
+	if(SSD1306_Buffer[x + (y / 8) * SSD1306_WIDTH] & (1 << (y % 8))) {
+	    return White;
+	}
+	return Black;
+}
 // Draw 1 char to the screen buffer
 // ch         => char om weg te schrijven
 // Font     => Font waarmee we gaan schrijven
