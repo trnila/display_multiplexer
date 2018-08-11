@@ -54,8 +54,8 @@ name = os.path.splitext(os.path.basename(args.input))[0]
 with open(os.path.join(args.output, "{}.h".format(name)), 'w') as out:
     out.write(TEMPLATE.format(
         name=name,
-        width=height - 1,
-        height=width - 1,
+        width=height,
+        height=width,
         pixels=",\n\t".join([", ".join(pixels[x:x+width]) for x in range(0, height*width, width)])
     ).lstrip())
 

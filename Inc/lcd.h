@@ -19,7 +19,7 @@ void LCD_Reset(void);
 
 void LCD_Init(void);
 void LCD_SetXY(uint16_t Xpos, uint16_t Ypos);
-void LCD_SetRegion(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEnd);
+void LCD_SetWindow(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEnd);
 void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t data);
 void LCD_Clear(uint16_t color);
 

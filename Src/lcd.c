@@ -120,7 +120,7 @@ void LCD_SetXY(uint16_t Xpos, uint16_t Ypos) {
 }
 
 
-void LCD_SetRegion(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEnd) {
+void LCD_SetWindow(uint8_t xStart, uint8_t yStart, uint8_t xEnd, uint8_t yEnd) {
 	LCD_WriteReg(ILI9225_ENTRY_MODE, 0x18);
 
 	LCD_WriteReg(ILI9225_HORIZONTAL_WINDOW_ADDR1, xEnd);
@@ -139,7 +139,7 @@ void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t data) {
 }
 
 void LCD_Clear(uint16_t color) {
-	LCD_SetRegion(0, 0, ILI9225_LCD_WIDTH, ILI9225_LCD_HEIGHT);
+	LCD_SetWindow(0, 0, ILI9225_LCD_WIDTH, ILI9225_LCD_HEIGHT);
 
 	// prepare buffered line
 	for(int i = 0; i < ILI9225_LCD_WIDTH; i++) {
@@ -167,6 +167,6 @@ void LCD_FillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t c
 }
 
 void LCD_DrawBitmap(const uint16_t* data, uint8_t x0, uint8_t y0, uint8_t width, uint8_t height) {
-	LCD_SetRegion(x0, y0, x0 + width, y0 + height);
+	LCD_SetWindow(x0, y0, x0 + width - 1, y0 + height - 1);
 	SPIBus_transmit(&dev, DC_DATA, (uint8_t*) data, sizeof(data[0]) * width * height);
 }
