@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <stdlib.h>
+#include <math.h>
 #include "lcd.h"
 #include "images/logo_small.h"
 
@@ -35,8 +37,44 @@ void falling_logo() {
 	}
 }
 
+// https://rosettacode.org/wiki/Chaos_game#C
+void sierpinski_chaos(float offset, int side, int iters) {
+	LCD_Clear(COLOR_BLACK);
+
+	int vertices[3][3];
+	for(int i = 0; i < 3; i++) {
+		vertices[i][0] = ILI9225_LCD_WIDTH / 2 + side * cos(i * 2 * 3.14 / 3 + 3.14 / 2);
+		vertices[i][1] = ILI9225_LCD_HEIGHT / 2 + side * sin(i * 2 * 3.14 / 3 + 3.14 / 2);
+		LCD_DrawPoint(vertices[i][0], vertices[i][1], COLOR_WHITE);
+	}
+
+
+	int seedX = rand() % (vertices[0][0] / 2 + (vertices[1][0] + vertices[2][0]) / 4);
+	int seedY = rand() % (vertices[0][1] / 2 + (vertices[1][1] + vertices[2][1]) / 4);
+	LCD_DrawPoint(seedX, seedY, COLOR_WHITE);
+
+	uint16_t color = COLOR_WHITE;
+	for(;;) {
+		for (int i = 0; i < iters; i++) {
+			int choice = rand() % 3;
+
+			seedX = (seedX + vertices[choice][0]) / 2;
+			seedY = (seedY + vertices[choice][1]) / 2;
+
+			LCD_DrawPoint(seedX, seedY, color);
+
+			vTaskDelay(1);
+		}
+
+		color = ~color;
+	}
+}
+
+
 void task_ILI9225(void *param) {
 	LCD_Init();
+
+	sierpinski_chaos(3.14 / 2, 78, 10000);
 
 	falling_logo();
 }
