@@ -14,3 +14,5 @@ struct gameoflife {
 
 void gameoflife_init(struct gameoflife *game, SSD1306_t *oled, uint8_t zoom, uint8_t* mem);
 void game_of_life(struct gameoflife* game);
+void gameoflife_clear(struct gameoflife *game);
+void gameoflife_random(struct gameoflife *game);

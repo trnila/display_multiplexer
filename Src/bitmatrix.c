@@ -1,5 +1,6 @@
-#include <utils.h>
-#include <bitmatrix.h>
+#include <memory.h>
+#include "utils.h"
+#include "bitmatrix.h"
 #include "ssd1306.h"
 
 void bitmatrix_set(struct bitmatrix *bits, uint8_t x, uint8_t y, uint8_t val) {
@@ -24,4 +25,8 @@ uint8_t bitmatrix_get(struct bitmatrix *bits, uint8_t x, uint8_t y) {
 	}
 
 	return (bits->data[x + (y / 8) * bits->width] & (1 << (y % 8))) > 0;
+}
+
+void bitmatrix_clear(struct bitmatrix *bits) {
+	memset(bits->data, 0, bits->height * bits->width / 8);
 }

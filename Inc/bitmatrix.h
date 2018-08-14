@@ -9,3 +9,4 @@ struct bitmatrix {
 
 void bitmatrix_set(struct bitmatrix *data, uint8_t x, uint8_t y, uint8_t val);
 uint8_t bitmatrix_get(struct bitmatrix *data, uint8_t x, uint8_t y);
+void bitmatrix_clear(struct bitmatrix *bits);

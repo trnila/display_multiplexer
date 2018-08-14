@@ -15,12 +15,19 @@ void gameoflife_init(struct gameoflife *game, SSD1306_t *oled, uint8_t zoom, uin
 	game->prev.data = mem + GAMEOFLIFE_BUFFER_SIZE(zoom);
 	game->prev.width = SSD1306_WIDTH / zoom;
 	game->prev.height = SSD1306_HEIGHT / zoom;
+}
 
+void gameoflife_random(struct gameoflife *game) {
 	for (int y = 0; y < SSD1306_HEIGHT / game->zoom; y++) {
 		for (int x = 0; x < SSD1306_WIDTH / game->zoom; x++) {
 			bitmatrix_set(&game->prev, x, y, rand() % 2 == 0);
 		}
 	}
+}
+
+void gameoflife_clear(struct gameoflife *game) {
+	bitmatrix_clear(&game->cur);
+	bitmatrix_clear(&game->prev);
 }
 
 int get_neighbors(struct gameoflife *game, int x, int y) {
