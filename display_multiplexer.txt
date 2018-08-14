@@ -1,0 +1,56 @@
+Configuration	display_multiplexer
+STM32CubeMX 	4.26.0
+Date	08/14/2018
+MCU	STM32F103C8Tx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+SPI1	Half-Duplex Master	SPI1_MOSI	PA7
+SPI1	Half-Duplex Master	SPI1_SCK	PA5
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+2	PC13-TAMPER-RTC	GPIO_Output	TFT_RS
+3	PC14-OSC32_IN	GPIO_Output	TFT_RST
+4	PC15-OSC32_OUT	GPIO_Output	TFT_CS
+10	PA0-WKUP	GPIO_Output	SSD1306_Reset
+11	PA1	GPIO_Output	SSD1306_DC
+12	PA2	GPIO_Output	SSD1306_CS
+15	PA5	SPI1_SCK	
+17	PA7	SPI1_MOSI	
+19	PB1	GPIO_Output	
+34	PA13	SYS_JTMS-SWDIO	
+37	PA14	SYS_JTCK-SWCLK	
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : display_multiplexer
+Project Folder : /home/daniel/projects/display_multiplexer
+Toolchain / IDE : SW4STM32
+Firmware Package Name and Version : STM32Cube FW_F1 V1.6.1
+
+
+Code Generation Settings : 
+STM32Cube Firmware Library Package : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : Yes
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : Balanced Size/Speed
+
+
+
+
+
+
