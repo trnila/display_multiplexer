@@ -2,11 +2,14 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include "ssd1306.h"
+#include "bitmatrix.h"
 
 void game_of_life(SSD1306_t *oled);
+void init();
 
 
 uint8_t buffer[OLED_BUFFER_SIZE], backbuffer[OLED_BUFFER_SIZE];
+
 SSD1306_t oled = {
 		.buffer = buffer,
 		.backbuffer = backbuffer,
@@ -21,14 +24,9 @@ SSD1306_t oled = {
 };
 
 void task_SSD1306(void *argument) {
-	ssd1306_Init(&oled, buffer, backbuffer);
+	ssd1306_Init(&oled, buffer, NULL);
 
-	for (int y = 0; y < SSD1306_HEIGHT; y++) {
-		for (int x = 0; x < SSD1306_WIDTH; x++) {
-			ssd1306_DrawPixel(&oled, x, y, rand() % 2 == 0 ? White : Black);
-		}
-	}
-	ssd1306_Swap(&oled);
+	init();
 
 	for(;;) {
 		game_of_life(&oled);
