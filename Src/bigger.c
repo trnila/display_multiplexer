@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "lcd.h"
-#include "images/logo_white.h"
+#include "assets/images/logo_white.h"
 
 #define MAX_OFFSET 0xDB
 

@@ -4,7 +4,7 @@
 #include "ssd1306.h"
 #include "bitmatrix.h"
 #include "game_of_life.h"
-#include "images/gameoflife.h"
+#include "assets/patterns.h"
 
 
 uint8_t buffer[OLED_BUFFER_SIZE];

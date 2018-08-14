@@ -1,8 +1,7 @@
 # Display multiplexer
 
-## Build new bitmap for ILI9225
-Add file to *images/* directory and run `./gen_images.sh`.
-Header file with data will be created in *Inc/images/*.
+## Build assets
+Add assets to the *assets/* directory and run `./build_assets.sh`, that will generate headers files into `Inc/assets/`.
 
 ## Build
 ```sh

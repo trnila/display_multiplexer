@@ -1,7 +1,7 @@
 cmake-build-debug/
 .idea/*
 *.tmp
-Inc/images/
+Inc/assets/
 .cproject
 .project
 .settings/
