@@ -1,6 +1,7 @@
 #pragma once
 #include <FreeRTOS.h>
 #include <semphr.h>
+#include "stm32f1xx.h"
 
 struct spi_dev {
 	GPIO_TypeDef *port_cs;

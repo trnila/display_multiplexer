@@ -9,6 +9,7 @@
 #define __SSD1306_H__
 
 #include "main.h"
+#include "spi_bus.h"
 
 #if defined(STM32F1)
 #include "stm32f1xx_hal.h"
@@ -47,6 +48,8 @@ extern SPI_HandleTypeDef SSD1306_SPI_PORT;
 // some LEDs don't display anything in first two columns
 // #define SSD1306_WIDTH           130
 
+#define OLED_BUFFER_SIZE SSD1306_WIDTH * SSD1306_HEIGHT / 8
+
 // Enumeration for screen colors
 typedef enum {
     Black = 0x00, // Black color, no pixel
@@ -58,23 +61,26 @@ typedef struct {
     uint16_t CurrentX;
     uint16_t CurrentY;
     uint8_t Inverted;
-    uint8_t Initialized;
+
+    uint8_t *buffer, *backbuffer;
+
+    struct spi_dev dev;
 } SSD1306_t;
 
 // Procedure definitions
-void ssd1306_Init(void);
-void ssd1306_Fill(SSD1306_COLOR color);
-void ssd1306_UpdateScreen(void);
-void ssd1306_DrawPixel(uint8_t x, uint8_t y, SSD1306_COLOR color);
-SSD1306_COLOR ssd1306_GetPixel(uint8_t x, uint8_t y);
-char ssd1306_WriteChar(char ch, FontDef Font, SSD1306_COLOR color);
-char ssd1306_WriteString(char* str, FontDef Font, SSD1306_COLOR color);
-void ssd1306_SetCursor(uint8_t x, uint8_t y);
-void ssd1306_Swap(uint8_t *buffer);
+void ssd1306_Init(SSD1306_t *oled, uint8_t* buffer, uint8_t* backbuffer);
+void ssd1306_Fill(SSD1306_t *oled, SSD1306_COLOR color);
+void ssd1306_UpdateScreen(SSD1306_t *oled);
+void ssd1306_DrawPixel(SSD1306_t *oled, uint8_t x, uint8_t y, SSD1306_COLOR color);
+SSD1306_COLOR ssd1306_GetPixel(SSD1306_t *oled, uint8_t x, uint8_t y);
+char ssd1306_WriteChar(SSD1306_t *oled, char ch, FontDef Font, SSD1306_COLOR color);
+char ssd1306_WriteString(SSD1306_t *oled, char* str, FontDef Font, SSD1306_COLOR color);
+void ssd1306_SetCursor(SSD1306_t *oled, uint8_t x, uint8_t y);
+void ssd1306_Swap(SSD1306_t *oled);
 
 // Low-level procedures
 void ssd1306_Reset(void);
-void ssd1306_WriteCommand(uint8_t byte);
-void ssd1306_WriteData(uint8_t* buffer, size_t buff_size);
+void ssd1306_WriteCommand(SSD1306_t* oled, uint8_t byte);
+void ssd1306_WriteData(SSD1306_t* oled, uint8_t* buffer, size_t buff_size);
 
 #endif // __SSD1306_H__
