@@ -2,7 +2,8 @@
 #include <stdint.h>
 #include "bitmatrix.h"
 
-#define GAMEOFLIFE_BUFFER_SIZE(ZOOM) (OLED_BUFFER_SIZE / (ZOOM) / (ZOOM))
+// TODO: fix calculation
+#define GAMEOFLIFE_BUFFER_SIZE(ZOOM) (200)
 
 struct gameoflife {
 	struct bitmatrix cur;

@@ -20,7 +20,7 @@ SSD1306_t oled = {
 
 };
 
-#define ZOOM 2
+#define ZOOM 3
 uint8_t gameoflife_mem[2 * GAMEOFLIFE_BUFFER_SIZE(ZOOM)];
 struct gameoflife game;
 
