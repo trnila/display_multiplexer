@@ -1,42 +1,51 @@
 #include <memory.h>
+#include "game_of_life.h"
 #include "ssd1306.h"
 #include "bitmatrix.h"
 #include <stdlib.h>
 
-uint8_t cur[OLED_BUFFER_SIZE / 4], prev[OLED_BUFFER_SIZE / 4];
+void gameoflife_init(struct gameoflife *game, SSD1306_t *oled, uint8_t zoom, uint8_t* mem) {
+	game->zoom = zoom;
+	game->oled = oled;
 
+	game->cur.data = mem;
+	game->cur.width = SSD1306_WIDTH / zoom;
+	game->cur.height = SSD1306_HEIGHT / zoom;
 
-void init() {
-	for (int y = 0; y < SSD1306_HEIGHT / 2; y++) {
-		for (int x = 0; x < SSD1306_WIDTH / 2; x++) {
-			bitmatrix_set(prev, x, y, rand() % 2 == 0);
+	game->prev.data = mem + GAMEOFLIFE_BUFFER_SIZE(zoom);
+	game->prev.width = SSD1306_WIDTH / zoom;
+	game->prev.height = SSD1306_HEIGHT / zoom;
+
+	for (int y = 0; y < SSD1306_HEIGHT / game->zoom; y++) {
+		for (int x = 0; x < SSD1306_WIDTH / game->zoom; x++) {
+			bitmatrix_set(&game->prev, x, y, rand() % 2 == 0);
 		}
 	}
 }
 
-int get_neighbors(int x, int y) {
+int get_neighbors(struct gameoflife *game, int x, int y) {
 	int total = 0;
 	for(int i = -1; i < 2; i++) {
 		for(int j = -1; j < 2; j++) {
-			if(bitmatrix_get(prev, x + i, y + j)) {
+			if(bitmatrix_get(&game->prev, x + i, y + j)) {
 				total++;
 			}
 		}
 	}
 
-	if(bitmatrix_get(prev, x, y)) {
+	if(bitmatrix_get(&game->prev, x, y)) {
 		total--;
 	}
 
 	return total;
 }
 
-void game_of_life(SSD1306_t *oled) {
-	for (int y = 0; y < SSD1306_HEIGHT / 2; y++) {
-		for (int x = 0; x < SSD1306_WIDTH / 2; x++) {
-			int neighbors = get_neighbors(x, y);
+void game_of_life(struct gameoflife* game) {
+	for (int y = 0; y < SSD1306_HEIGHT / game->zoom; y++) {
+		for (int x = 0; x < SSD1306_WIDTH / game->zoom; x++) {
+			int neighbors = get_neighbors(game, x, y);
 			int state;
-			if (bitmatrix_get(prev, x, y)) {
+			if (bitmatrix_get(&game->prev, x, y)) {
 				if (neighbors == 2 || neighbors == 3) {
 					state = 1;
 				} else {
@@ -49,17 +58,20 @@ void game_of_life(SSD1306_t *oled) {
 					state = 0;
 				}
 			}
-			bitmatrix_set(cur, x, y, state);
+			bitmatrix_set(&game->cur, x, y, state);
 
-			ssd1306_DrawPixel(oled, 2 * x, 2 * y, state);
-			ssd1306_DrawPixel(oled, 2 * x + 1, 2 * y, state);
-			ssd1306_DrawPixel(oled, 2 * x, 2 * y + 1, state);
-			ssd1306_DrawPixel(oled, 2 * x + 1, 2 * y + 1, state);
+			for(int i = 0; i < game->zoom; i++) {
+				for (int j = 0; j < game->zoom; j++) {
+					ssd1306_DrawPixel(game->oled, game->zoom * x + i, game->zoom * y + j, state);
+				}
+			}
 		}
 	}
 
-	memcpy(prev, cur, OLED_BUFFER_SIZE / 4);
+	uint8_t *tmp = game->prev.data;
+	game->prev.data = game->cur.data;
+	game->cur.data = tmp;
 
 	//ssd1306_Swap(oled);
-	ssd1306_UpdateScreen(oled);
+	ssd1306_UpdateScreen(game->oled);
 }

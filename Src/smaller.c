@@ -3,9 +3,7 @@
 #include <task.h>
 #include "ssd1306.h"
 #include "bitmatrix.h"
-
-void game_of_life(SSD1306_t *oled);
-void init();
+#include "game_of_life.h"
 
 
 uint8_t buffer[OLED_BUFFER_SIZE], backbuffer[OLED_BUFFER_SIZE];
@@ -23,13 +21,17 @@ SSD1306_t oled = {
 
 };
 
+#define ZOOM 2
+uint8_t gameoflife_mem[2 * GAMEOFLIFE_BUFFER_SIZE(ZOOM)];
+struct gameoflife game;
+
 void task_SSD1306(void *argument) {
 	ssd1306_Init(&oled, buffer, NULL);
 
-	init();
+	gameoflife_init(&game, &oled, ZOOM, gameoflife_mem);
 
 	for(;;) {
-		game_of_life(&oled);
+		game_of_life(&game);
 		vTaskDelay(100);
 	}
 }
