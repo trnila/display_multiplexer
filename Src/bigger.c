@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include "lcd.h"
-#include "images/logo_small.h"
+#include "images/logo_white.h"
+
+#define MAX_OFFSET 0xDB
 
 void falling_logo() {
 	const uint8_t pos[][2] = {
@@ -15,22 +17,22 @@ void falling_logo() {
 	};
 
 
-	LCD_Clear(COLOR_BLACK);
+	LCD_Clear(COLOR_WHITE);
 	for(int i = 0; i < sizeof(pos) / sizeof(*pos); i++) {
-		LCD_DrawBitmap(image_logo_small_data, pos[i][0], pos[i][1], image_logo_small_width, image_logo_small_height);
+		LCD_DrawBitmap(image_logo_white_data, pos[i][0], pos[i][1], image_logo_white_width, image_logo_white_height);
 	}
 
 	// scroll whole screen
 	LCD_WriteReg(ILI9225_VERTICAL_SCROLL_CTRL1, 0x00DB);
 	LCD_WriteReg(ILI9225_VERTICAL_SCROLL_CTRL2, 0x0000);
 
-	int i = 0;
+	int i = MAX_OFFSET;
 	for(;;) {
 		LCD_WriteReg(ILI9225_VERTICAL_SCROLL_CTRL3, i);
 
-		i += 10;
-		if(i > 0xDB) {
-			i = 0;
+		i -= 10;
+		if(i < 0) {
+			i = MAX_OFFSET;
 		}
 
 		vTaskDelay(100);
@@ -74,6 +76,7 @@ void sierpinski_chaos(float offset, int side, int iters) {
 void task_ILI9225(void *param) {
 	LCD_Init();
 
+	falling_logo();
 	sierpinski_chaos(3.14 / 2, 78, 10000);
 
 	falling_logo();
