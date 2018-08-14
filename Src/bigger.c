@@ -41,7 +41,7 @@ void falling_logo() {
 
 // https://rosettacode.org/wiki/Chaos_game#C
 void sierpinski_chaos(float offset, int side, int iters) {
-	LCD_Clear(COLOR_BLACK);
+	LCD_Clear(COLOR_WHITE);
 
 	int vertices[3][3];
 	for(int i = 0; i < 3; i++) {
@@ -55,8 +55,8 @@ void sierpinski_chaos(float offset, int side, int iters) {
 	int seedY = rand() % (vertices[0][1] / 2 + (vertices[1][1] + vertices[2][1]) / 4);
 	LCD_DrawPoint(seedX, seedY, COLOR_WHITE);
 
-	uint16_t color = COLOR_WHITE;
-	for(;;) {
+	uint16_t color = COLOR_BLACK;
+	//for(;;) {
 		for (int i = 0; i < iters; i++) {
 			int choice = rand() % 3;
 
@@ -68,16 +68,16 @@ void sierpinski_chaos(float offset, int side, int iters) {
 			vTaskDelay(1);
 		}
 
-		color = ~color;
-	}
+	//	color = ~color;
+	//}
 }
 
 
 void task_ILI9225(void *param) {
 	LCD_Init();
 
+	sierpinski_chaos(3.14 / 2, 78, 6000);
 	falling_logo();
-	sierpinski_chaos(3.14 / 2, 78, 10000);
 
-	falling_logo();
+	for(;;);
 }
