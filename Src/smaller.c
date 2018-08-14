@@ -6,11 +6,10 @@
 #include "game_of_life.h"
 
 
-uint8_t buffer[OLED_BUFFER_SIZE], backbuffer[OLED_BUFFER_SIZE];
+uint8_t buffer[OLED_BUFFER_SIZE];
 
 SSD1306_t oled = {
 		.buffer = buffer,
-		.backbuffer = backbuffer,
 		.dev = {
 				.port_cs = SSD1306_CS_GPIO_Port,
 				.pin_cs = SSD1306_CS_Pin,

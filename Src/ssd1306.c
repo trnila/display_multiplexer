@@ -144,10 +144,13 @@ void ssd1306_Fill(SSD1306_t* oled, SSD1306_COLOR color) {
 }
 
 void ssd1306_Swap(SSD1306_t *oled) {
+    if(!oled->backbuffer) {
+        return;
+    }
+
     uint8_t *tmp = oled->buffer;
     oled->buffer = oled->backbuffer;
     oled->backbuffer = tmp;
-
 }
 
 // Write the screenbuffer with changed to the screen
@@ -185,8 +188,7 @@ void ssd1306_DrawPixel(SSD1306_t *oled, uint8_t x, uint8_t y, SSD1306_COLOR colo
 }
 
 SSD1306_COLOR ssd1306_GetPixel(SSD1306_t *oled, uint8_t x, uint8_t y) {
-	if(x >= SSD1306_WIDTH || y >= SSD1306_HEIGHT) {
-		// Don't write outside the buffer
+	if(x >= SSD1306_WIDTH || y >= SSD1306_HEIGHT || !oled->backbuffer) {
 		return Black;
 	}
 
