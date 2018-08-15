@@ -4,21 +4,25 @@
 #include "bitmatrix.h"
 #include <stdlib.h>
 
-void gameoflife_init(struct gameoflife *game, uint8_t zoom, uint8_t* mem) {
-	game->zoom = zoom;
+uint8_t mem1[3000];
+uint8_t mem2[3000];
 
-	game->cur.data = mem;
-	game->cur.width = SSD1306_WIDTH / zoom;
-	game->cur.height = SSD1306_HEIGHT / zoom;
+void gameoflife_init(struct gameoflife *game, int width, int height) {
+	game->width = width;
+	game->height = height;
 
-	game->prev.data = mem + GAMEOFLIFE_BUFFER_SIZE(zoom);
-	game->prev.width = SSD1306_WIDTH / zoom;
-	game->prev.height = SSD1306_HEIGHT / zoom;
+	game->cur.data = mem1;
+	game->cur.width = width;
+	game->cur.height = height;
+
+	game->prev.data = mem2;
+	game->prev.width = width;
+	game->prev.height = height;
 }
 
 void gameoflife_random(struct gameoflife *game) {
-	for (int y = 0; y < SSD1306_HEIGHT / game->zoom; y++) {
-		for (int x = 0; x < SSD1306_WIDTH / game->zoom; x++) {
+	for (int x = 0; x < game->width; x++) {
+		for (int y = 0; y < game->height; y++) {
 			bitmatrix_set(&game->prev, x, y, rand() % 2 == 0);
 		}
 	}
@@ -47,8 +51,8 @@ int get_neighbors(struct gameoflife *game, int x, int y) {
 }
 
 void game_of_life(struct gameoflife* game) {
-	for (int y = 0; y < SSD1306_HEIGHT / game->zoom; y++) {
-		for (int x = 0; x < SSD1306_WIDTH / game->zoom; x++) {
+	for (int x = 0; x < game->width; x++) {
+		for (int y = 0; y < game->height; y++) {
 			int neighbors = get_neighbors(game, x, y);
 			int state;
 			if (bitmatrix_get(&game->prev, x, y)) {

@@ -9,7 +9,7 @@
 
 uint8_t buffer[OLED_BUFFER_SIZE];
 
-SSD1306_t oled = {
+SSD1306_t oled1 = {
 		.buffer = buffer,
 		.dev = {
 				.port_cs = SSD1306_CS_GPIO_Port,
@@ -34,17 +34,31 @@ SSD1306_t oled2 = {
 };
 
 #define ZOOM 1
-uint8_t gameoflife_mem[2 * GAMEOFLIFE_BUFFER_SIZE(ZOOM)];
 struct gameoflife game;
 
+void draw(SSD1306_t *oled, int from) {
+	ssd1306_Fill(oled, Black);
+	for(int x = 0; x < 128 / ZOOM; x++) {
+		for(int y = 0; y < 64 / ZOOM; y++) {
+			for(int i = 0; i < ZOOM; i++) {
+				for (int j = 0; j < ZOOM; j++) {
+					int state = bitmatrix_get(&game.prev, from + x, y);
+					ssd1306_DrawPixel(oled, ZOOM * x + i, ZOOM * y + j, state);
+				}
+			}
+		}
+	}
+	ssd1306_UpdateScreen(oled);
+}
+
 void task_SSD1306(void *argument) {
-	ssd1306_Init(&oled);
+	ssd1306_Init(&oled1);
 	ssd1306_Init(&oled2);
 
 	ssd1306_WriteChar(&oled2, 'a', Font_16x26, White);
 	ssd1306_UpdateScreen(&oled2);
 
-	gameoflife_init(&game, ZOOM, gameoflife_mem);
+	gameoflife_init(&game, 2 * SSD1306_WIDTH, SSD1306_HEIGHT);
 
 	int pattern = 0;
 	for(;;) {
@@ -58,24 +72,11 @@ void task_SSD1306(void *argument) {
 			pattern = 0;
 		}
 
-
-		for(int i = 0; i < 50; i++) {
+		for(int i = 0; i < 10; i++) {
 			game_of_life(&game);
 
-			for(int x = 0; x < 128 / ZOOM; x++) {
-				for(int y = 0; y < 64 / ZOOM; y++) {
-					for(int i = 0; i < ZOOM; i++) {
-						for (int j = 0; j < ZOOM; j++) {
-							int state = bitmatrix_get(&game.cur, x, y);
-							ssd1306_DrawPixel(&oled, ZOOM * x + i, ZOOM * y + j, state);
-						}
-					}
-				}
-			}
-
-			ssd1306_UpdateScreen(&oled);
-
-
+			draw(&oled1, 0);
+			draw(&oled2, 128);
 
 			vTaskDelay(100);
 		}

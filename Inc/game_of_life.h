@@ -3,15 +3,16 @@
 #include "bitmatrix.h"
 
 // TODO: fix calculation
-#define GAMEOFLIFE_BUFFER_SIZE(ZOOM) (1300)
+#define GAMEOFLIFE_BUFFER_SIZE(ZOOM) (2400)
 
 struct gameoflife {
 	struct bitmatrix cur;
 	struct bitmatrix prev;
-	uint8_t zoom;
+	int width;
+	int height;
 };
 
-void gameoflife_init(struct gameoflife *game, uint8_t zoom, uint8_t* mem);
+void gameoflife_init(struct gameoflife *game, int width, int height);
 void game_of_life(struct gameoflife* game);
 void gameoflife_clear(struct gameoflife *game);
 void gameoflife_random(struct gameoflife *game);

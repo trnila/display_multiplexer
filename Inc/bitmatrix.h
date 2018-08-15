@@ -2,8 +2,8 @@
 #include "ssd1306.h"
 
 struct bitmatrix {
-	uint8_t width;
-	uint8_t height;
+	int width;
+	int height;
 	uint8_t *data;
 };
 
