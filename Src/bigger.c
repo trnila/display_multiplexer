@@ -30,12 +30,12 @@ void falling_logo() {
 	for(;;) {
 		LCD_WriteReg(ILI9225_VERTICAL_SCROLL_CTRL3, i);
 
-		i -= 10;
+		i -= 1;
 		if(i < 0) {
 			i = MAX_OFFSET;
 		}
 
-		vTaskDelay(100);
+		vTaskDelay(10);
 	}
 }
 
@@ -76,7 +76,7 @@ void sierpinski_chaos(float offset, int side, int iters) {
 void task_ILI9225(void *param) {
 	LCD_Init();
 
-	sierpinski_chaos(3.14 / 2, 78, 6000);
+	//sierpinski_chaos(3.14 / 2, 78, 6000);
 	falling_logo();
 
 	for(;;);
