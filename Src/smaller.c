@@ -33,10 +33,12 @@ SSD1306_t oled2 = {
 
 };
 
-#define ZOOM 1
+#define ZOOM 3
 struct gameoflife game;
 
-void draw(SSD1306_t *oled, int from) {
+void draw(SSD1306_t *oled, int offset) {
+	int from = offset * 128 / ZOOM;
+
 	ssd1306_Fill(oled, Black);
 	for(int x = 0; x < 128 / ZOOM; x++) {
 		for(int y = 0; y < 64 / ZOOM; y++) {
@@ -76,7 +78,7 @@ void task_SSD1306(void *argument) {
 			game_of_life(&game);
 
 			draw(&oled1, 0);
-			draw(&oled2, 128);
+			draw(&oled2, 1);
 
 			vTaskDelay(100);
 		}
