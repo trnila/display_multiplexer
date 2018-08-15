@@ -71,23 +71,26 @@ void task_SSD1306(void *argument) {
 
 	gameoflife_init(&game, 2 * SSD1306_WIDTH, SSD1306_HEIGHT);
 
-	int pattern = -1;
+	int pattern = -2;
 	for(;;) {
-		if(pattern == -1) {
+		if(pattern == -2) {
 			show_text();
-			pattern = 0;
+			pattern++;
 			vTaskDelay(3000);
 		}
 
-
-		gameoflife_clear(&game);
-		for(int i = gameoflife_offsets[pattern]; i < gameoflife_offsets[pattern + 1]; i += 2) {
-			bitmatrix_set(&game.prev, gameoflife_patterns[i], gameoflife_patterns[i + 1], 1);
+		if(pattern == -1) {
+			gameoflife_random(&game);
+		} else {
+			gameoflife_clear(&game);
+			for (int i = gameoflife_offsets[pattern]; i < gameoflife_offsets[pattern + 1]; i += 2) {
+				bitmatrix_set(&game.prev, gameoflife_patterns[i], gameoflife_patterns[i + 1], 1);
+			}
 		}
 
 		pattern++;
 		if(pattern + 1 >= sizeof(gameoflife_offsets) / sizeof(*gameoflife_offsets)) {
-			pattern = -1;
+			pattern = -2;
 		}
 
 		for(int i = 0; i < 10; i++) {
