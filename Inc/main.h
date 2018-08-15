@@ -61,12 +61,10 @@
 
 #define TFT_RS_Pin GPIO_PIN_13
 #define TFT_RS_GPIO_Port GPIOC
-#define TFT_RST_Pin GPIO_PIN_14
-#define TFT_RST_GPIO_Port GPIOC
+#define DISPLAY_RST_Pin GPIO_PIN_14
+#define DISPLAY_RST_GPIO_Port GPIOC
 #define TFT_CS_Pin GPIO_PIN_15
 #define TFT_CS_GPIO_Port GPIOC
-#define SSD1306_Reset_Pin GPIO_PIN_0
-#define SSD1306_Reset_GPIO_Port GPIOA
 #define SSD1306_DC_Pin GPIO_PIN_1
 #define SSD1306_DC_GPIO_Port GPIOA
 #define SSD1306_CS_Pin GPIO_PIN_2

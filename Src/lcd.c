@@ -39,15 +39,13 @@ void LCD_WriteReg(uint8_t index, uint16_t data) {
 }
 
 void LCD_Reset(void) {
-	HAL_GPIO_WritePin(TFT_RST_GPIO_Port, TFT_RST_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(DISPLAY_RST_GPIO_Port, DISPLAY_RST_Pin, GPIO_PIN_RESET);
 	vTaskDelay(100);
-	HAL_GPIO_WritePin(TFT_RST_GPIO_Port, TFT_RST_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(DISPLAY_RST_GPIO_Port, DISPLAY_RST_Pin, GPIO_PIN_SET);
 	vTaskDelay(50);
 }
 
 void LCD_Init(void) {
-	LCD_Reset();
-
 	LCD_WriteReg(ILI9225_POWER_CTRL1, 0);
 	LCD_WriteReg(ILI9225_POWER_CTRL2, 0);
 	LCD_WriteReg(ILI9225_POWER_CTRL3, 0);

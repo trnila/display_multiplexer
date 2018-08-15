@@ -8,19 +8,6 @@
 #define DC_COMMAND GPIO_PIN_RESET
 #define DC_DATA GPIO_PIN_SET
 
-uint8_t reseted = 0;
-
-void ssd1306_Reset(void) {
-	// CS = High (not selected)
-	HAL_GPIO_WritePin(SSD1306_DC_GPIO_Port, SSD1306_CS_Pin, GPIO_PIN_SET);
-
-	// Reset the OLED
-	HAL_GPIO_WritePin(SSD1306_Reset_GPIO_Port, SSD1306_Reset_Pin, GPIO_PIN_RESET);
-	vTaskDelay(10);
-	HAL_GPIO_WritePin(SSD1306_Reset_GPIO_Port, SSD1306_Reset_Pin, GPIO_PIN_SET);
-	vTaskDelay(10);
-}
-
 // Send a byte to the command register
 void ssd1306_WriteCommand(SSD1306_t *oled, uint8_t byte) {
     SPIBus_transmit(&oled->dev, DC_COMMAND, &byte, 1);
@@ -35,13 +22,6 @@ void ssd1306_WriteData(SSD1306_t *oled, uint8_t* buffer, size_t buff_size) {
 void ssd1306_Init(SSD1306_t *oled) {
     oled->CurrentX = 0;
     oled->CurrentY = 0;
-
-
-	// Reset OLED
-    if(!reseted) {
-        ssd1306_Reset();
-        reseted = 1;
-    }
 
     // Wait for the screen to boot
     vTaskDelay(100);

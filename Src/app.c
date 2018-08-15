@@ -13,6 +13,7 @@ void task_SSD1306(void *param);
 
 void app() {
 	SPIBus_init(&hspi1);
+	LCD_Reset();
 
 	ASSERT(xTaskCreate(task_ILI9225, "ili9225", 128, NULL, tskIDLE_PRIORITY, NULL) == pdPASS);
 	task_SSD1306(NULL);
