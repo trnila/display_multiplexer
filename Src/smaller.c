@@ -12,8 +12,8 @@ uint8_t buffer[OLED_BUFFER_SIZE];
 SSD1306_t oled1 = {
 		.buffer = buffer,
 		.dev = {
-				.port_cs = SSD1306_CS_GPIO_Port,
-				.pin_cs = SSD1306_CS_Pin,
+				.port_cs = OLED0_CS_GPIO_Port,
+				.pin_cs = OLED0_CS_Pin,
 
 				.port_dc = DISPLAY_DATA_GPIO_Port,
 				.pin_dc = DISPLAY_DATA_Pin
@@ -24,8 +24,8 @@ SSD1306_t oled1 = {
 SSD1306_t oled2 = {
 		.buffer = buffer,
 		.dev = {
-				.port_cs = SSD1306_CS2_GPIO_Port,
-				.pin_cs = SSD1306_CS2_Pin,
+				.port_cs = OLED1_CS_GPIO_Port,
+				.pin_cs = OLED1_CS_Pin,
 
 				.port_dc = DISPLAY_DATA_GPIO_Port,
 				.pin_dc = DISPLAY_DATA_Pin
@@ -68,6 +68,7 @@ void task_SSD1306(void *argument) {
 		for(int i = gameoflife_offsets[pattern]; i < gameoflife_offsets[pattern + 1]; i += 2) {
 			bitmatrix_set(&game.prev, gameoflife_patterns[i], gameoflife_patterns[i + 1], 1);
 		}
+		gameoflife_random(&game);
 
 		pattern++;
 		if(pattern + 1 >= sizeof(gameoflife_offsets) / sizeof(*gameoflife_offsets)) {
@@ -80,7 +81,7 @@ void task_SSD1306(void *argument) {
 			draw(&oled1, 0);
 			draw(&oled2, 1);
 
-			vTaskDelay(100);
+			vTaskDelay(50);
 		}
 	}
 }

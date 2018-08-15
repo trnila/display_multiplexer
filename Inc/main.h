@@ -63,12 +63,12 @@
 #define DISPLAY_DATA_GPIO_Port GPIOC
 #define DISPLAY_RST_Pin GPIO_PIN_14
 #define DISPLAY_RST_GPIO_Port GPIOC
-#define TFT_CS_Pin GPIO_PIN_15
-#define TFT_CS_GPIO_Port GPIOC
-#define SSD1306_CS_Pin GPIO_PIN_2
-#define SSD1306_CS_GPIO_Port GPIOA
-#define SSD1306_CS2_Pin GPIO_PIN_3
-#define SSD1306_CS2_GPIO_Port GPIOA
+#define OLED1_CS_Pin GPIO_PIN_12
+#define OLED1_CS_GPIO_Port GPIOB
+#define OLED0_CS_Pin GPIO_PIN_13
+#define OLED0_CS_GPIO_Port GPIOB
+#define TFT_CS_Pin GPIO_PIN_7
+#define TFT_CS_GPIO_Port GPIOB
 
 /* ########################## Assert Selection ############################## */
 /**
