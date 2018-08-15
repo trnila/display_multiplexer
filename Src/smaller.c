@@ -15,8 +15,8 @@ SSD1306_t oled1 = {
 				.port_cs = SSD1306_CS_GPIO_Port,
 				.pin_cs = SSD1306_CS_Pin,
 
-				.port_dc = SSD1306_DC_GPIO_Port,
-				.pin_dc = SSD1306_DC_Pin
+				.port_dc = DISPLAY_DATA_GPIO_Port,
+				.pin_dc = DISPLAY_DATA_Pin
 		}
 
 };
@@ -27,8 +27,8 @@ SSD1306_t oled2 = {
 				.port_cs = SSD1306_CS2_GPIO_Port,
 				.pin_cs = SSD1306_CS2_Pin,
 
-				.port_dc = SSD1306_DC_GPIO_Port,
-				.pin_dc = SSD1306_DC_Pin
+				.port_dc = DISPLAY_DATA_GPIO_Port,
+				.pin_dc = DISPLAY_DATA_Pin
 		}
 
 };

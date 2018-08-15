@@ -16,8 +16,8 @@ static struct spi_dev dev = {
 		.port_cs = TFT_CS_GPIO_Port,
 		.pin_cs = TFT_CS_Pin,
 
-		.port_dc = TFT_RS_GPIO_Port,
-		.pin_dc = TFT_RS_Pin
+		.port_dc = DISPLAY_DATA_GPIO_Port,
+		.pin_dc = DISPLAY_DATA_Pin
 };
 
 void LCD_WriteIndex(uint8_t index) {
