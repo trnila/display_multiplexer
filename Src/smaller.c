@@ -33,7 +33,7 @@ SSD1306_t oled2 = {
 
 };
 
-#define ZOOM 4
+#define ZOOM 1
 uint8_t gameoflife_mem[2 * GAMEOFLIFE_BUFFER_SIZE(ZOOM)];
 struct gameoflife game;
 
@@ -44,7 +44,7 @@ void task_SSD1306(void *argument) {
 	ssd1306_WriteChar(&oled2, 'a', Font_16x26, White);
 	ssd1306_UpdateScreen(&oled2);
 
-	gameoflife_init(&game, &oled, ZOOM, gameoflife_mem);
+	gameoflife_init(&game, ZOOM, gameoflife_mem);
 
 	int pattern = 0;
 	for(;;) {
@@ -61,6 +61,22 @@ void task_SSD1306(void *argument) {
 
 		for(int i = 0; i < 50; i++) {
 			game_of_life(&game);
+
+			for(int x = 0; x < 128 / ZOOM; x++) {
+				for(int y = 0; y < 64 / ZOOM; y++) {
+					for(int i = 0; i < ZOOM; i++) {
+						for (int j = 0; j < ZOOM; j++) {
+							int state = bitmatrix_get(&game.cur, x, y);
+							ssd1306_DrawPixel(&oled, ZOOM * x + i, ZOOM * y + j, state);
+						}
+					}
+				}
+			}
+
+			ssd1306_UpdateScreen(&oled);
+
+
+
 			vTaskDelay(100);
 		}
 	}

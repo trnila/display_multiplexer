@@ -4,9 +4,8 @@
 #include "bitmatrix.h"
 #include <stdlib.h>
 
-void gameoflife_init(struct gameoflife *game, SSD1306_t *oled, uint8_t zoom, uint8_t* mem) {
+void gameoflife_init(struct gameoflife *game, uint8_t zoom, uint8_t* mem) {
 	game->zoom = zoom;
-	game->oled = oled;
 
 	game->cur.data = mem;
 	game->cur.width = SSD1306_WIDTH / zoom;
@@ -66,19 +65,10 @@ void game_of_life(struct gameoflife* game) {
 				}
 			}
 			bitmatrix_set(&game->cur, x, y, state);
-
-			for(int i = 0; i < game->zoom; i++) {
-				for (int j = 0; j < game->zoom; j++) {
-					ssd1306_DrawPixel(game->oled, game->zoom * x + i, game->zoom * y + j, state);
-				}
-			}
 		}
 	}
 
 	uint8_t *tmp = game->prev.data;
 	game->prev.data = game->cur.data;
 	game->cur.data = tmp;
-
-	//ssd1306_Swap(oled);
-	ssd1306_UpdateScreen(game->oled);
 }
