@@ -71,6 +71,8 @@
 #define SSD1306_DC_GPIO_Port GPIOA
 #define SSD1306_CS_Pin GPIO_PIN_2
 #define SSD1306_CS_GPIO_Port GPIOA
+#define SSD1306_CS2_Pin GPIO_PIN_3
+#define SSD1306_CS2_GPIO_Port GPIOA
 
 /* ########################## Assert Selection ############################## */
 /**

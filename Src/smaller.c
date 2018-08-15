@@ -21,12 +21,28 @@ SSD1306_t oled = {
 
 };
 
+SSD1306_t oled2 = {
+		.buffer = buffer,
+		.dev = {
+				.port_cs = SSD1306_CS2_GPIO_Port,
+				.pin_cs = SSD1306_CS2_Pin,
+
+				.port_dc = SSD1306_DC_GPIO_Port,
+				.pin_dc = SSD1306_DC_Pin
+		}
+
+};
+
 #define ZOOM 4
 uint8_t gameoflife_mem[2 * GAMEOFLIFE_BUFFER_SIZE(ZOOM)];
 struct gameoflife game;
 
 void task_SSD1306(void *argument) {
-	ssd1306_Init(&oled, buffer, NULL);
+	ssd1306_Init(&oled);
+	ssd1306_Init(&oled2);
+
+	ssd1306_WriteChar(&oled2, 'a', Font_16x26, White);
+	ssd1306_UpdateScreen(&oled2);
 
 	gameoflife_init(&game, &oled, ZOOM, gameoflife_mem);
 
