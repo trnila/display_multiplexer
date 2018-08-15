@@ -155,13 +155,10 @@ void ssd1306_Swap(SSD1306_t *oled) {
 
 // Write the screenbuffer with changed to the screen
 void ssd1306_UpdateScreen(SSD1306_t *oled) {
-    uint8_t i;
-    for(i = 0; i < 8; i++) {
-        ssd1306_WriteCommand(oled, 0xB0 + i);
-        ssd1306_WriteCommand(oled, 0x00);
-        ssd1306_WriteCommand(oled, 0x10);
-        ssd1306_WriteData(oled, &oled->buffer[SSD1306_WIDTH*i],SSD1306_WIDTH);
-    }
+    ssd1306_WriteCommand(oled, 0xB0);
+    ssd1306_WriteCommand(oled, 0x00);
+    ssd1306_WriteCommand(oled, 0x10);
+    ssd1306_WriteData(oled, oled->buffer, OLED_BUFFER_SIZE);
 }
 
 //    Draw one pixel in the screenbuffer
