@@ -53,26 +53,41 @@ void draw(SSD1306_t *oled, int offset) {
 	ssd1306_UpdateScreen(oled);
 }
 
+static void show_text() {
+	ssd1306_Fill(&oled1, Black);
+	ssd1306_SetCursor(&oled1, 0, 15);
+	ssd1306_WriteString(&oled1, "   OLED", Font_16x26, White);
+	ssd1306_UpdateScreen(&oled1);
+
+	ssd1306_Fill(&oled2, Black);
+	ssd1306_SetCursor(&oled2, 0, 15);
+	ssd1306_WriteString(&oled2, "DISPLAY", Font_16x26, White);
+	ssd1306_UpdateScreen(&oled2);
+}
+
 void task_SSD1306(void *argument) {
 	ssd1306_Init(&oled1);
 	ssd1306_Init(&oled2);
 
-	ssd1306_WriteChar(&oled2, 'a', Font_16x26, White);
-	ssd1306_UpdateScreen(&oled2);
-
 	gameoflife_init(&game, 2 * SSD1306_WIDTH, SSD1306_HEIGHT);
 
-	int pattern = 0;
+	int pattern = -1;
 	for(;;) {
+		if(pattern == -1) {
+			show_text();
+			pattern = 0;
+			vTaskDelay(3000);
+		}
+
+
 		gameoflife_clear(&game);
 		for(int i = gameoflife_offsets[pattern]; i < gameoflife_offsets[pattern + 1]; i += 2) {
 			bitmatrix_set(&game.prev, gameoflife_patterns[i], gameoflife_patterns[i + 1], 1);
 		}
-		gameoflife_random(&game);
 
 		pattern++;
 		if(pattern + 1 >= sizeof(gameoflife_offsets) / sizeof(*gameoflife_offsets)) {
-			pattern = 0;
+			pattern = -1;
 		}
 
 		for(int i = 0; i < 10; i++) {

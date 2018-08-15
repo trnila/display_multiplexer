@@ -72,14 +72,12 @@ void ssd1306_Init(SSD1306_t *oled);
 void ssd1306_Fill(SSD1306_t *oled, SSD1306_COLOR color);
 void ssd1306_UpdateScreen(SSD1306_t *oled);
 void ssd1306_DrawPixel(SSD1306_t *oled, uint8_t x, uint8_t y, SSD1306_COLOR color);
-SSD1306_COLOR ssd1306_GetPixel(SSD1306_t *oled, uint8_t x, uint8_t y);
 char ssd1306_WriteChar(SSD1306_t *oled, char ch, FontDef Font, SSD1306_COLOR color);
 char ssd1306_WriteString(SSD1306_t *oled, char* str, FontDef Font, SSD1306_COLOR color);
 void ssd1306_SetCursor(SSD1306_t *oled, uint8_t x, uint8_t y);
 void ssd1306_Swap(SSD1306_t *oled);
 
 // Low-level procedures
-void ssd1306_Reset(void);
 void ssd1306_WriteCommand(SSD1306_t* oled, uint8_t byte);
 void ssd1306_WriteData(SSD1306_t* oled, uint8_t* buffer, size_t buff_size);
 

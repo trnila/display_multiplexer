@@ -153,6 +153,9 @@ void ssd1306_DrawPixel(SSD1306_t *oled, uint8_t x, uint8_t y, SSD1306_COLOR colo
         // Don't write outside the buffer
         return;
     }
+
+    x = SSD1306_WIDTH - x - 1;
+    y = SSD1306_HEIGHT - y - 1;
     
     // Check if pixel should be inverted
     if(oled->Inverted) {
@@ -167,16 +170,6 @@ void ssd1306_DrawPixel(SSD1306_t *oled, uint8_t x, uint8_t y, SSD1306_COLOR colo
     }
 }
 
-SSD1306_COLOR ssd1306_GetPixel(SSD1306_t *oled, uint8_t x, uint8_t y) {
-	if(x >= SSD1306_WIDTH || y >= SSD1306_HEIGHT || !oled->backbuffer) {
-		return Black;
-	}
-
-	if(oled->backbuffer[x + (y / 8) * SSD1306_WIDTH] & (1 << (y % 8))) {
-	    return White;
-	}
-	return Black;
-}
 // Draw 1 char to the screen buffer
 // ch         => char om weg te schrijven
 // Font     => Font waarmee we gaan schrijven
