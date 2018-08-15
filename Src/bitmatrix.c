@@ -10,8 +10,6 @@ void bitmatrix_set(struct bitmatrix *bits, uint8_t x, uint8_t y, uint8_t val) {
 
 	int index = x + (y / 8) * bits->width;
 
-	ASSERT(index >= 256);
-
 	if(val) {
 		bits->data[index] |= 1 << (y % 8);
 	} else {
