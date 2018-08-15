@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "lcd.h"
-#include "assets/images/logo_white.h"
+#include "assets/images/logo_small.h"
 
 #define MAX_OFFSET 0xDB
 
@@ -17,9 +17,9 @@ void falling_logo() {
 	};
 
 
-	LCD_Clear(COLOR_WHITE);
+	LCD_Clear(COLOR_BLACK);
 	for(int i = 0; i < sizeof(pos) / sizeof(*pos); i++) {
-		LCD_DrawBitmap(image_logo_white_data, pos[i][0], pos[i][1], image_logo_white_width, image_logo_white_height);
+		LCD_DrawBitmap(image_logo_small_data, pos[i][0], pos[i][1], image_logo_small_width, image_logo_small_height);
 	}
 
 	// scroll whole screen
