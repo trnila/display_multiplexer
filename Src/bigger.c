@@ -5,6 +5,7 @@
 #include <math.h>
 #include "lcd.h"
 #include "assets/images/logo_small.h"
+#include "assets/images/text.h"
 
 #define MAX_OFFSET 0xDB
 
@@ -21,6 +22,7 @@ void falling_logo() {
 	for(int i = 0; i < sizeof(pos) / sizeof(*pos); i++) {
 		LCD_DrawBitmap(image_logo_small_data, pos[i][0], pos[i][1], image_logo_small_width, image_logo_small_height);
 	}
+	LCD_DrawBitmap(image_text_data, 0, 0, image_text_width, image_text_height);
 
 	// scroll whole screen
 	LCD_WriteReg(ILI9225_VERTICAL_SCROLL_CTRL1, 0x00DB);
@@ -75,7 +77,7 @@ void task_ILI9225(void *param) {
 	LCD_Init();
 
 	for(;;) {
-		sierpinski_chaos(3.14 / 2, 78, 6000);
+		//sierpinski_chaos(3.14 / 2, 78, 6000);
 		falling_logo();
 	}
 }
