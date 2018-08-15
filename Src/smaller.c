@@ -96,7 +96,7 @@ void task_SSD1306(void *argument) {
 			draw(&oled1, 0);
 			draw(&oled2, 1);
 
-			vTaskDelay(50);
+			vTaskDelay(20);
 		}
 	}
 }
