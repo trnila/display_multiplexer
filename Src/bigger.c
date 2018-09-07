@@ -77,7 +77,7 @@ void task_ILI9225(void *param) {
 	LCD_Init();
 
 	for(;;) {
-		//sierpinski_chaos(3.14 / 2, 78, 6000);
+		sierpinski_chaos(3.14 / 2, 78, 6000);
 		falling_logo();
 	}
 }
